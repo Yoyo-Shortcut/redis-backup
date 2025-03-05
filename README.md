@@ -18,7 +18,7 @@ Rewritten from https://github.com/ductienthan/redis-backup
 redis-cli -u 'redis://<username>:<password>@<hostname>:<port>' --rdb your_backup.rdb
 ```
 
-**Example using test-redis**
+**Example using test-redis Docker container**
 
 NOTE: Redis does not have username by default
 
@@ -34,7 +34,7 @@ redis-cli -u 'redis://:yoyo@127.0.0.1:6381' --rdb ./backups/dump.rdb
 redis-server --dir /path/to/your_backup --dbfilename dump.rdb
 ```
 
-**Example using local-redis**
+**Example using local-redis Docker container**
 
 Since I mount ./local-redis-data to /data of local-redis already, we simply replace dump.rdb there
 
@@ -84,5 +84,5 @@ docker ps -a
 ## 3. Execute an interactive terminal
 
 ```zsh
-docker exec -it _container_id_ bash
+docker exec -it <container_id> bash
 ```
