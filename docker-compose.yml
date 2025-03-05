@@ -1,0 +1,27 @@
+services:
+  redis-backup:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Keep container running
+    stdin_open: true
+    tty: true
+
+  local-redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6380:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass yoyo
+    volumes:
+      - ./local-redis-data:/data
+
+  test-redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6381:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass yoyo
+    volumes:
+      - ./test-redis-data:/data
