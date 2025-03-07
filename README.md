@@ -4,85 +4,42 @@ Redis backup server to deploy on Railway
 
 Rewritten from https://github.com/ductienthan/redis-backup
 
+Research links:
+
+- https://redis.io/docs/latest/operate/oss_and_stack/management/replication/
+- https://stackoverflow.com/questions/68124389/redis-error-condition-on-socket-for-sync-connection-refused
+- https://www.codeleading.com/article/52024828196/
+- https://stackoverflow.com/questions/25416007/what-does-the-bind-parameter-do-in-redis
+- https://stackoverflow.com/questions/37402551/what-is-the-location-of-redis-conf-in-official-docker-image
+
 # Tech
 
 - `redis-cli`: For generating rdb and importing back into a Redis instance
 - `Node.js`: For mini server
 - `Docker`: For containerizing the whole environment, making it easier to deploy
 
-# Export remote snapshot to local
+# Overall idea
 
-## 1. Take snapshot rdb
+We have 2 Redis instances:
 
-```zsh
-redis-cli -u 'redis://<username>:<password>@<hostname>:<port>' --rdb your_backup.rdb
-```
+1. Remote: The main Redis instance we want to backup (The one on our production server)
+2. Local: The temporary Redis instance that will help us during `recovering` process
 
-**Example using test-redis Docker container**
+There are 2 actions we want to perform:
 
-NOTE: Redis does not have username by default
+1. Backup: Retrieve a `dump.rdb` file from our production Redis server
+2. Restore: Push a `dump.rdb` file back into our production Redis server
 
-```zsh
-redis-cli -u 'redis://:yoyo@127.0.0.1:6381' --rdb ./backups/dump.rdb
-```
+Overview of procedures:
 
-# Import local snapshot into remote
+1. Backup: We simply use redis-cli to export a `dump.rdb` file from our production Redis server
 
-## 1. Load rdb into a local Redis instance
+2. Restore:
 
-```zsh
-redis-server --dir /path/to/your_backup --dbfilename dump.rdb
-```
+- We first need to put the backup `dump.rdb` file in our local Redis instance
+- Then, we use Redis replication method to make our production Redis server replicate our local Redis instance
+- The production server will automatically copy all the data from local Redis instance and thus recover the backup file
 
-**Example using local-redis Docker container**
+# Docs
 
-Since I mount ./local-redis-data to /data of local-redis already, we simply replace dump.rdb there
-
-## 2. Connect remote Redis as a replica (slave) of local Redis
-
-```zsh
-redis-cli -u 'redis://<username>:<password>@<remote-hostname>:<port>' replicaof <your-local-ip> 6379
-```
-
-**Example**
-
-- We will treat test-redis instance as remote
-- And local-redis instance as local
-
-```zsh
-redis-cli -u 'redis://:yoyo@127.0.0.1:6381' replicaof 127.0.0.1 6380
-```
-
-## 3. Close connection when sync completes
-
-```zsh
-redis-cli -u 'redis://<username>:<password>@<remote-hostname>:<port>' replicaof no one
-```
-
-**Example**
-
-```zsh
-redis-cli -u 'redis://:yoyo@127.0.0.1:6381' replicaof no one
-```
-
-# Dev container
-
-## 1. Run docker compose up
-
-This will create the whole environment for you in the background
-
-```zsh
-docker compose up -d
-```
-
-## 2. List container ids
-
-```zsh
-docker ps -a
-```
-
-## 3. Execute an interactive terminal
-
-```zsh
-docker exec -it <container_id> bash
-```
+- [Playground Redis](./docs/playground-redis.md): Play around with the Docker setup of 2 Redis instances, simulating local and remote situation

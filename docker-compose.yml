@@ -13,8 +13,9 @@ services:
     restart: always
     ports:
       - "6380:6379"
-    command: redis-server --save 20 1 --loglevel warning --requirepass yoyo
+    command: redis-server /usr/local/etc/redis/redis.conf --save 60 1 --requirepass yoyo
     volumes:
+      - ./local-redis-data/redis.conf:/usr/local/etc/redis/redis.conf
       - ./local-redis-data:/data
 
   test-redis:
@@ -22,6 +23,6 @@ services:
     restart: always
     ports:
       - "6381:6379"
-    command: redis-server --save 20 1 --loglevel warning --requirepass yoyo
+    command: redis-server --save 60 1 --requirepass yoyo
     volumes:
       - ./test-redis-data:/data
