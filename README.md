@@ -4,6 +4,10 @@ Redis backup server to deploy on Railway
 
 Rewritten from https://github.com/ductienthan/redis-backup
 
+- Based on https://github.com/railwayapp-templates/postgres-s3-backups
+- Postgres S3 blog: https://blog.railway.com/p/postgre-backup
+- Automated Postgres S3 blog: https://blog.railway.com/p/automated-postgresql-backups
+
 Research links:
 
 - https://redis.io/docs/latest/operate/oss_and_stack/management/replication/
@@ -43,3 +47,7 @@ Overview of procedures:
 # Docs
 
 - [Playground Redis](./docs/playground-redis.md): Play around with the Docker setup of 2 Redis instances, simulating local and remote situation
+
+# Learning Resources
+
+- [Difference between AWS libraries](./docs/difference-aws-libraries.md): Difference between `@aws-sdk/client-s3` and `@aws-sdk/lib-storage`

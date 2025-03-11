@@ -4,9 +4,14 @@ services:
       context: .
       dockerfile: Dockerfile
 
+    depends_on:
+      - local-redis
+      - test-redis
+
     # Keep container running
     stdin_open: true
     tty: true
+    command: ["tail", "-f", "/dev/null"]
 
   local-redis:
     image: redis:latest
