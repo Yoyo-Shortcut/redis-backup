@@ -19,7 +19,7 @@ Research links:
 # Tech
 
 - `redis-cli`: For generating rdb and importing back into a Redis instance
-- `Node.js`: For mini server
+- `Node.js`: For mini cron scheduler Node process
 - `Docker`: For containerizing the whole environment, making it easier to deploy
 
 # Overall idea
