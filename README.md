@@ -36,17 +36,21 @@ There are 2 actions we want to perform:
 
 Overview of procedures:
 
-1. Backup: We simply use redis-cli to export a `dump.rdb` file from our production Redis server
+1. Backup:
+
+- We simply use redis-cli to export a `dump.rdb` file from our production Redis server
 
 2. Restore:
 
-- We first need to put the backup `dump.rdb` file in our local Redis instance
+- We first need to push the backup `dump.rdb` file into our local Redis instance
 - Then, we use Redis replication method to make our production Redis server replicate our local Redis instance
-- The production server will automatically copy all the data from local Redis instance and thus recover the backup file
+- The production server will automatically copy over all the data from local Redis instance and thus recover the backup file
 
 # Docs
 
 - [Playground Redis](./docs/playground-redis.md): Play around with the Docker setup of 2 Redis instances, simulating local and remote situation
+
+- [Node Program](./docs/node-program.md): Doc for Node.js program running backup cron job uploading to AWS S3
 
 # Learning Resources
 
