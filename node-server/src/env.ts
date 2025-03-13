@@ -2,7 +2,18 @@ import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
 
-const NODE_ENV = process.env.NODE_ENV || "development";
+const stringWithDefault = (value: string | undefined, defaultValue: string) => {
+  if (value === undefined || value.length === 0) {
+    return defaultValue;
+  }
+  return value;
+};
+
+const stringToBoolean = (value: string) => {
+  return value.toLowerCase() === "true";
+};
+
+const NODE_ENV = stringWithDefault(process.env.NODE_ENV, "development");
 
 if (NODE_ENV === "development") {
   try {
@@ -44,7 +55,10 @@ export const resolvedEnv = {
    *
    * Default: ""
    */
-  AWS_S3_BUCKET_SUBFOLDER: process.env.AWS_S3_BUCKET_SUBFOLDER || "",
+  AWS_S3_BUCKET_SUBFOLDER: stringWithDefault(
+    process.env.AWS_S3_BUCKET_SUBFOLDER,
+    ""
+  ),
 
   /**
    * The S3 custom endpoint you want to use.
@@ -53,7 +67,7 @@ export const resolvedEnv = {
    *
    * Default: ""
    */
-  AWS_S3_ENDPOINT: process.env.AWS_S3_ENDPOINT || "",
+  AWS_S3_ENDPOINT: stringWithDefault(process.env.AWS_S3_ENDPOINT, ""),
 
   /**
    * Use path style for the endpoint instead of the default subdomain style, useful for MinIO and local S3 servers
@@ -62,8 +76,8 @@ export const resolvedEnv = {
    *
    * Default: "false"
    */
-  AWS_S3_FORCE_PATH_STYLE: Boolean(
-    process.env.AWS_S3_FORCE_PATH_STYLE || "false"
+  AWS_S3_FORCE_PATH_STYLE: stringToBoolean(
+    stringWithDefault(process.env.AWS_S3_FORCE_PATH_STYLE, "false")
   ),
 
   /**
@@ -75,8 +89,8 @@ export const resolvedEnv = {
    *
    * Default: "false"
    */
-  AWS_S3_SUPPORT_OBJECT_LOCK: Boolean(
-    process.env.AWS_S3_SUPPORT_OBJECT_LOCK || "false"
+  AWS_S3_SUPPORT_OBJECT_LOCK: stringToBoolean(
+    stringWithDefault(process.env.AWS_S3_SUPPORT_OBJECT_LOCK, "false")
   ),
 
   /**
@@ -93,7 +107,7 @@ export const resolvedEnv = {
    *
    * Default: ""
    */
-  BACKUP_OPTIONS: process.env.BACKUP_OPTIONS || "",
+  BACKUP_OPTIONS: stringWithDefault(process.env.BACKUP_OPTIONS, ""),
 
   /**
    * The cron schedule to run the backup on.
@@ -102,7 +116,10 @@ export const resolvedEnv = {
    *
    * Default: "0 5 * * *"
    */
-  BACKUP_CRON_SCHEDULE: process.env.BACKUP_CRON_SCHEDULE || "0 5 * * *",
+  BACKUP_CRON_SCHEDULE: stringWithDefault(
+    process.env.BACKUP_CRON_SCHEDULE,
+    "0 5 * * *"
+  ),
 
   /**
    * Prefix to the file name
@@ -111,7 +128,10 @@ export const resolvedEnv = {
    *
    * Default: "backup"
    */
-  BACKUP_FILE_PREFIX: process.env.BACKUP_FILE_PREFIX || "backup",
+  BACKUP_FILE_PREFIX: stringWithDefault(
+    process.env.BACKUP_FILE_PREFIX,
+    "backup"
+  ),
 
   /**
    * Run a backup on startup of this application
@@ -120,7 +140,9 @@ export const resolvedEnv = {
    *
    * Default: "false"
    */
-  RUN_ON_STARTUP: Boolean(process.env.RUN_ON_STARTUP || "false"),
+  RUN_ON_STARTUP: stringToBoolean(
+    stringWithDefault(process.env.RUN_ON_STARTUP, "false")
+  ),
 
   /**
    * Run a single backup on start and exit when completed
@@ -129,5 +151,7 @@ export const resolvedEnv = {
    *
    * Default: "false"
    */
-  SINGLE_SHOT_MODE: Boolean(process.env.SINGLE_SHOT_MODE || "false"),
+  SINGLE_SHOT_MODE: stringToBoolean(
+    stringWithDefault(process.env.SINGLE_SHOT_MODE, "false")
+  ),
 };
