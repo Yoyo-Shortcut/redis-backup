@@ -1,36 +1,34 @@
 FROM ubuntu:latest
 
+# Use bash for the shell
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # === 1. Setup environment ===
 
+# https://gist.github.com/marvell/7c812736565928e602c4
 RUN apt update && apt install -y \
     build-essential \
-    procps \
     curl \
-    file \
-    git
+    git \
+    redis \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set up Homebrew
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-RUN echo 'export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH"' >> ~/.profile
+# === 1a. Install nvm ===
 
-SHELL ["/bin/bash", "-l", "-c"]
+# https://github.com/nvm-sh/nvm?tab=readme-ov-file#installing-and-updating
 
-# Install redis and redis-cli
-RUN brew install redis
+# Create a script file sourced by both interactive and non-interactive bash shells
+ENV BASH_ENV=/root/.bash_env
+RUN touch "${BASH_ENV}"
+RUN echo '. "${BASH_ENV}"' >> ~/.bashrc
 
-# Install nvm
-RUN brew install nvm
-RUN chmod +x "$(brew --prefix nvm)/nvm.sh"
-RUN echo 'export NVM_DIR="$(brew --prefix nvm)"' >> ~/.profile
-RUN echo '[ -s "$(brew --prefix nvm)/nvm.sh" ] && \. "$(brew --prefix nvm)/nvm.sh"' >> ~/.profile
-RUN echo '[ -s "$(brew --prefix nvm)/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix nvm)/etc/bash_completion.d/nvm"' >> ~/.profile
-
-# Install pnpm
-RUN brew install pnpm
-
-# Install Node.js LTS
+# Download and install nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.2/install.sh | PROFILE="${BASH_ENV}" bash
 RUN nvm install --lts
-RUN nvm use --lts
+
+# === 1b. Install pnpm ===
+
+RUN npm install -g pnpm
 
 # === 2. Copy project into Docker ===
 
@@ -45,6 +43,6 @@ RUN rm -rf dist node_modules
 RUN pnpm install
 RUN pnpm build
 
-ENTRYPOINT ["/bin/bash", "-l", "-c"]
+ENTRYPOINT ["/bin/bash", "-o", "pipefail", "-c"]
 
 CMD ["pnpm start"]

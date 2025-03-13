@@ -52,6 +52,8 @@ Overview of procedures:
 
 - [Node Program](./docs/node-program.md): Doc for Node.js program running backup cron job uploading to AWS S3
 
+- [Docker](./docs/docker.md): Doc and some notes for Docker
+
 # Learning Resources
 
 - [Difference between AWS libraries](./docs/difference-aws-libraries.md): Difference between `@aws-sdk/client-s3` and `@aws-sdk/lib-storage`
